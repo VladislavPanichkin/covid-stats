@@ -13,7 +13,14 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { createMuiTheme, makeStyles, styled, ThemeProvider } from "@material-ui/core/styles";
+import {
+  createMuiTheme,
+  makeStyles,
+  styled,
+  ThemeProvider,
+} from "@material-ui/core/styles";
+import Country from "./components/Country";
+import GlobalCases from "./components/GlobalCases";
 
 const countryToFlag = (isoCode) => {
   return typeof String.fromCodePoint !== "undefined"
@@ -28,7 +35,13 @@ const countryToFlag = (isoCode) => {
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#fff",
+      main: "#636363",
+    },
+    secondary: {
+      main: "#898989",
+    },
+    textPrimary: {
+      main: "#636363",
     },
   },
 });
@@ -48,11 +61,14 @@ const useStyles = makeStyles((theme) => ({
     "&:first-child": {
       padding: "1%",
     },
+    color: "white",
   },
 
   gridContainer: {
     border: "1px solid #898989",
     padding: "0 1%",
+    margin: 0,
+    width: "100%"
   },
 
   countrySelect: {
@@ -78,6 +94,11 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     display: "inline-block",
   },
+
+  globalCasesContainer: {
+    display: "flex",
+    alignItems: "baseline"
+  },
 }));
 
 const NavBar = styled(Toolbar)({
@@ -93,11 +114,9 @@ const App = (props) => {
   const [countryInputAvailable, setCountryInputAvailable] = React.useState(
     false
   );
-  const [globalCases, setGlobalCases] = React.useState(null)
 
   const [value, setValue] = React.useState(null);
 
-  // DOESN'T WORK
   React.useEffect(() => {
     setCountryInputAvailable(false);
     axios
@@ -109,15 +128,6 @@ const App = (props) => {
         setCountryInputAvailable(true);
       });
   }, []);
-
-  React.useEffect(() => {
-    axios
-      .get(baseUrl + "summary")
-      .then(({ data }) => {
-        console.log(data);
-        setGlobalCases(data.Global.TotalConfirmed);
-      })
-  }, [globalCases])
 
   return (
     <>
@@ -134,7 +144,7 @@ const App = (props) => {
                 onChange={(event, newValue) => {
                   setValue(newValue);
                 }}
-                options={countries}
+                options={countries ? countries : []}
                 style={{ width: 300 }}
                 autoHighlight
                 disabled={!countryInputAvailable}
@@ -171,39 +181,19 @@ const App = (props) => {
           <main>
             <Paper className={classes.main}>
               <Container>
-                <Grid container className={classes.gridContainer}>
-                  <Grid item lg={12}>
-                    {value != null ? (
-                      <>
-                        <Box className={classes.flagContainer}>
-                          <span className={classes.flag}>
-                            {countryToFlag(value.ISO2)}
-                          </span>
-                          <div>
-                            <Typography
-                              variant="h5"
-                              className={classes.countryName}
-                            >
-                              {value.Country}
-                            </Typography>
-                            <Box color="white">country population</Box>
-                          </div>
-                        </Box>
-                        <Box>last updated:</Box>
-                      </>
-                    ) : (
-                      <>
-                        <Box>
-                          <Typography variant="h5" color="primary">
-                            Global cases
-                          </Typography>
-                          <Box>
-                            {globalCases !== null ? globalCases : 'loading...'}
-                          </Box>
-                        </Box>
-                      </>
-                    )}
-                  </Grid>
+                <Grid container spacing={6} className={classes.gridContainer}>
+                  {value != null ? (
+                    <Country
+                      classes={classes}
+                      value={value}
+                      countryToFlag={countryToFlag}
+                    />
+                  ) : (
+                    <GlobalCases
+                      baseUrl={baseUrl}
+                      classes={classes}
+                    />
+                  )}
                 </Grid>
               </Container>
             </Paper>
