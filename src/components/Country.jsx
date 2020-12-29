@@ -34,7 +34,6 @@ export default function Country({ countryToFlag, value, classes, baseUrl }) {
                     <Box color="white">country population: {countryPopulation || 'no data'}</Box>
                 </div>
             </Box>
-            <Box>last updated:</Box>
         </Grid>
     )
 }

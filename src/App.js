@@ -21,6 +21,7 @@ import {
 } from "@material-ui/core/styles";
 import Country from "./components/Country";
 import GlobalCases from "./components/GlobalCases";
+import Charts from "./components/Charts";
 
 const countryToFlag = (isoCode) => {
   return typeof String.fromCodePoint !== "undefined"
@@ -68,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid #898989",
     padding: "0 1%",
     margin: 0,
-    width: "100%"
+    width: "100%",
   },
 
   countrySelect: {
@@ -97,8 +98,13 @@ const useStyles = makeStyles((theme) => ({
 
   globalCasesContainer: {
     display: "flex",
-    alignItems: "baseline"
+    alignItems: "baseline",
   },
+
+  rechartsContainer: {
+    width: "75vw",
+    height: "50vw"
+  }
 }));
 
 const NavBar = styled(Toolbar)({
@@ -107,6 +113,9 @@ const NavBar = styled(Toolbar)({
 });
 
 const baseUrl = "https://api.covid19api.com/";
+const headers = {
+  key: "5cf9dfd5-3449-485e-b5ae-70a60e997864",
+};
 
 const App = (props) => {
   const classes = useStyles();
@@ -183,16 +192,20 @@ const App = (props) => {
               <Container>
                 <Grid container spacing={6} className={classes.gridContainer}>
                   {value != null ? (
-                    <Country
-                      classes={classes}
-                      value={value}
-                      countryToFlag={countryToFlag}
-                    />
+                    <>
+                      <Country
+                        classes={classes}
+                        value={value}
+                        countryToFlag={countryToFlag}
+                      />
+                      <Charts
+                        value={value}
+                        theme={theme}
+                        classes={classes}
+                      />
+                    </>
                   ) : (
-                    <GlobalCases
-                      baseUrl={baseUrl}
-                      classes={classes}
-                    />
+                    <GlobalCases baseUrl={baseUrl} classes={classes} />
                   )}
                 </Grid>
               </Container>
