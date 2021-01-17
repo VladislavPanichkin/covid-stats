@@ -1,11 +1,9 @@
 import React from 'react';
 import axios from 'axios';
-import {
-    XAxis, YAxis, CartesianGrid, AreaChart, Area, ResponsiveContainer, Tooltip,
-} from 'recharts';
-import { ThemeProvider } from '@material-ui/core';
+import { XAxis, YAxis, CartesianGrid, AreaChart, Area, ResponsiveContainer } from 'recharts';
+import { Box, ThemeProvider } from '@material-ui/core';
 
-export default function Charts({ value, theme, classes }) {
+export default function CountryChart({ value, theme, classes }) {
 
     const [countryData, setCountryData] = React.useState(null);
 
@@ -32,9 +30,19 @@ export default function Charts({ value, theme, classes }) {
 
     return (
         <ThemeProvider theme={theme}>
-            {countryData ? 
+            {countryData ?
                 <div className={classes.rechartsContainer}>
-                    <ResponsiveContainer width='100%' height='100%'>
+                    <Box className={classes.legendContainer}>
+                        <Box display="flex" alignItems="center">
+                            <div className={classes.chartLegend + " " + classes.chartLegend_red}></div>
+                            <div display="inlineBlock">Daily new cases</div>
+                        </Box>
+                        <Box display="flex" alignItems="center">
+                            <div className={classes.chartLegend + " " + classes.chartLegend_yellow}></div>
+                            <div display="inlineBlock">Daily new deaths</div>
+                        </Box>
+                    </Box>
+                    <ResponsiveContainer width='100%' height='85%'>
                         <AreaChart
                             data={countryData}
                             margin={{
@@ -57,7 +65,7 @@ export default function Charts({ value, theme, classes }) {
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
-            : ''}
+                : ''}
         </ThemeProvider>
     )
 }

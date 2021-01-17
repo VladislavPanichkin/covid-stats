@@ -4,12 +4,10 @@ import {
   AppBar,
   Container,
   Grid,
-  IconButton,
   Paper,
   Toolbar,
   Typography,
   TextField,
-  Box,
   CircularProgress,
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -19,9 +17,9 @@ import {
   styled,
   ThemeProvider,
 } from "@material-ui/core/styles";
-import Country from "./components/Country";
 import GlobalCases from "./components/GlobalCases";
-import Charts from "./components/Charts";
+import CountryChart from "./components/CountryChart";
+import GlobalChart from "./components/GlobalChart";
 
 const countryToFlag = (isoCode) => {
   return typeof String.fromCodePoint !== "undefined"
@@ -58,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 
   main: {
     background: "#636363",
-    height: "80vw",
+    //height: "80vw",
     "&:first-child": {
       padding: "1%",
     },
@@ -103,8 +101,32 @@ const useStyles = makeStyles((theme) => ({
 
   rechartsContainer: {
     width: "75vw",
-    height: "50vw"
-  }
+    height: "50vw",
+  },
+
+  legendContainer: {
+    display: "flex",
+    justifyContent: "space-evenly",
+  },
+
+  chartLegend: {
+    width: "5vw",
+    height: "1vw",
+    display: "inline-block",
+    marginRight: "5%",
+  },
+
+  chartLegend_red: {
+    background: "red",
+  },
+
+  chartLegend_yellow: {
+    background: "yellow",
+  },
+
+  chartLegend_blue: {
+    background: "blue",
+  },
 }));
 
 const NavBar = styled(Toolbar)({
@@ -113,15 +135,19 @@ const NavBar = styled(Toolbar)({
 });
 
 const baseUrl = "https://api.covid19api.com/";
-const headers = {
-  key: "5cf9dfd5-3449-485e-b5ae-70a60e997864",
-};
+// const headers = {
+//   key: "5cf9dfd5-3449-485e-b5ae-70a60e997864",
+// };
 
-const App = (props) => {
+const App = () => {
   const classes = useStyles();
   const [countries, setCountries] = React.useState(null);
   const [countryInputAvailable, setCountryInputAvailable] = React.useState(
     false
+  );
+  const [globalCases, setGlobalCases] = React.useState(null);
+  const [lastGlobalUpdated, setLastGlobalUpdated] = React.useState(
+    "loading..."
   );
 
   const [value, setValue] = React.useState(null);
@@ -137,6 +163,13 @@ const App = (props) => {
         setCountryInputAvailable(true);
       });
   }, []);
+
+  React.useEffect(() => {
+    axios.get(baseUrl + "summary").then(({ data }) => {
+      setGlobalCases(data.Global.TotalConfirmed);
+      setLastGlobalUpdated(data.Date.substring(0, 10));
+    });
+  }, [globalCases]);
 
   return (
     <>
@@ -193,20 +226,22 @@ const App = (props) => {
                 <Grid container spacing={6} className={classes.gridContainer}>
                   {value != null ? (
                     <>
-                      <Country
+                      <CountryChart
                         classes={classes}
                         value={value}
                         countryToFlag={countryToFlag}
                       />
-                      <Charts
-                        value={value}
-                        theme={theme}
-                        classes={classes}
-                      />
                     </>
                   ) : (
-                    <GlobalCases baseUrl={baseUrl} classes={classes} />
+                    <GlobalCases
+                      classes={classes}
+                      globalCases={globalCases}
+                      lastGlobalUpdated={lastGlobalUpdated}
+                    />
                   )}
+                  <Container>
+                    <GlobalChart classes={classes} />
+                  </Container>
                 </Grid>
               </Container>
             </Paper>
