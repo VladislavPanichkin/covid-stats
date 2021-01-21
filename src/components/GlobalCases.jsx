@@ -1,5 +1,7 @@
-import { Box, Grid, Typography } from '@material-ui/core';
 import React from 'react';
+import { Box, Grid, Typography } from '@material-ui/core';
+
+import Count from './Count';
 
 export default function GlobalCases({ globalCases, lastGlobalUpdated, classes }) {
 
@@ -14,7 +16,11 @@ export default function GlobalCases({ globalCases, lastGlobalUpdated, classes })
                         {globalCases !== null ? globalCases : "loading..."}
                     </Typography>
                 </Box>
-                <Box>{`Up to date stats: ${lastGlobalUpdated}`}</Box>
+                <Box>
+                    <Typography>
+                     {`Up to date stats: ${lastGlobalUpdated}`}
+                    </Typography>
+                </Box>
             </Grid>
         </>
     )

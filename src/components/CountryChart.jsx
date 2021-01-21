@@ -2,6 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { XAxis, YAxis, CartesianGrid, AreaChart, Area, ResponsiveContainer } from 'recharts';
 import { Box, ThemeProvider } from '@material-ui/core';
+import ChartLegend from './ChartLegend';
+import Summary from './Summary';
 
 export default function CountryChart({ value, theme, classes }) {
 
@@ -10,9 +12,9 @@ export default function CountryChart({ value, theme, classes }) {
     React.useEffect(() => {
         if (value) {
             axios
-                .get("https://corona-api.com/countries/" + value.ISO2)
+                .get("https://corona-api.com/countries/" + value)
                 .then((data) => {
-                    setCountryData(data.data.data.timeline);
+                    setCountryData(data.data.data);
                     //log in data.data.timeline - contains an array of such objects: 
                     //active: 1720
                     // confirmed: 5910
@@ -31,20 +33,12 @@ export default function CountryChart({ value, theme, classes }) {
     return (
         <ThemeProvider theme={theme}>
             {countryData ?
+            <>
                 <div className={classes.rechartsContainer}>
-                    <Box className={classes.legendContainer}>
-                        <Box display="flex" alignItems="center">
-                            <div className={classes.chartLegend + " " + classes.chartLegend_red}></div>
-                            <div display="inlineBlock">Daily new cases</div>
-                        </Box>
-                        <Box display="flex" alignItems="center">
-                            <div className={classes.chartLegend + " " + classes.chartLegend_yellow}></div>
-                            <div display="inlineBlock">Daily new deaths</div>
-                        </Box>
-                    </Box>
+                    <ChartLegend classes={classes} />
                     <ResponsiveContainer width='100%' height='85%'>
                         <AreaChart
-                            data={countryData}
+                            data={countryData.timeline}
                             margin={{
                                 top: 5,
                                 right: 30,
@@ -53,19 +47,21 @@ export default function CountryChart({ value, theme, classes }) {
                             }}
                         >
                             <XAxis stroke="#898989" dataKey="date" />
-                            <YAxis stroke="#898989" scale={'sqrt'} interval={'preserveStart'} />
+                            <YAxis stroke="#898989" scale={'sqrt'} tickCount={50} interval={'preserveEnd'} />
                             <CartesianGrid strokeDasharray="3 3" />
                             <Area
                                 type="monotone" dataKey="new_confirmed"
-                                stroke="red" fill="red" />
+                                stroke="#DEDB28" fill="#DEDB28" />
                             <Area
                                 type="monotone" dataKey="new_deaths"
-                                stroke="yellow" fill="yellow"
+                                stroke="#DE1212" fill="#DE1212"
                             />
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
-                : ''}
+                <Summary classes={classes} countryData={countryData}/>
+                </>
+                : <div>No data</div>}
         </ThemeProvider>
     )
 }

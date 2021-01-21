@@ -23,12 +23,13 @@ function GlobalChart({ classes }) {
             <ChartLegend classes={classes} />
             <ResponsiveContainer width='100%' height='85%'>
                 <LineChart width={600} height={300} data={globalData}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                    <XAxis stroke="#898989" dataKey="date" />
-                    <YAxis stroke="#898989" scale={'sqrt'} interval={'preserveStart'}/>
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
+                    <XAxis stroke="#898989" dataKey="date" reversed={true}/>
+                    <YAxis stroke="#898989" scale={'sqrt'} tickCount={50} interval={'preserveEnd'}/>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <Line type="monotone" dataKey="new_confirmed" stroke="red" dot={false}/>
-                    <Line type="monotone" dataKey="new_deaths" stroke="yellow" dot={false}/>
+                    <Line type="monotone" dataKey="new_confirmed" stroke="#DEDB28" dot={false}/>
+                    <Line type="monotone" dataKey="new_deaths" stroke="#DE1212" dot={false}/>
                 </LineChart>
             </ResponsiveContainer>
         </div>

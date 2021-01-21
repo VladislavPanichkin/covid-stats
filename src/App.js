@@ -20,6 +20,7 @@ import {
 import GlobalCases from "./components/GlobalCases";
 import CountryChart from "./components/CountryChart";
 import GlobalChart from "./components/GlobalChart";
+import Summary from "./components/Summary";
 
 const countryToFlag = (isoCode) => {
   return typeof String.fromCodePoint !== "undefined"
@@ -117,27 +118,30 @@ const useStyles = makeStyles((theme) => ({
   },
 
   chartLegend_red: {
-    background: "red",
+    background: "#DEDB28",
   },
 
   chartLegend_yellow: {
-    background: "yellow",
+    background: "#DE1212",
   },
 
   chartLegend_blue: {
     background: "blue",
   },
+
+  summaryTable: {
+    border: "1px solid white",
+    borderCollapse: "none"
+  }
 }));
 
 const NavBar = styled(Toolbar)({
   flexDirection: "row",
   justifyContent: "space-between",
+  marginTop: "1%"
 });
 
 const baseUrl = "https://api.covid19api.com/";
-// const headers = {
-//   key: "5cf9dfd5-3449-485e-b5ae-70a60e997864",
-// };
 
 const App = () => {
   const classes = useStyles();
@@ -228,7 +232,7 @@ const App = () => {
                     <>
                       <CountryChart
                         classes={classes}
-                        value={value}
+                        value={value.ISO2}
                         countryToFlag={countryToFlag}
                       />
                     </>
